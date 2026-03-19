@@ -8,6 +8,7 @@ import sys
 
 # the alphabet
 ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/? "
+#ALPHABET = " -,;:!?/.'\"()[]$&#%012345789aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxyYzZ" # used on ciphertext3
 
 # read ciphertext
 ciphertext = sys.stdin.read()
@@ -20,7 +21,6 @@ for shift in range(len(ALPHABET)):
     current_plaintext = []
 
     for char in ciphertext:
-        print(char)
 
         #find char in alphabet
         try:
@@ -38,15 +38,16 @@ for shift in range(len(ALPHABET)):
             current_plaintext.append(char)
     
     # add plaintext to list of possibilities
-    poss_plaintexts[shift] = current_plaintext
+    poss_plaintexts[shift] = "".join(current_plaintext)
 
 # screen plaintexts with dictionary
 likely_plaintexts = {}
 
 # load dictionary file
-with open("dictionary.txt", "r") as dictionary:
+with open("dictionary.txt", "r") as dictionary_file:
+    dictionary = dictionary_file.read()
 
-    for shift, text in poss_plaintexts:
+    for shift, text in poss_plaintexts.items():
 
         # Split into words by spaces
         words = text.split(" ")
@@ -55,11 +56,17 @@ with open("dictionary.txt", "r") as dictionary:
         recognized_words = 0
 
         for word in words:
-            
+            if word in dictionary and len(word) >= 1:
+                print(f"recognized the word {word}")
+                recognized_words += 1
 
-            # check proportion of recognized words to total words
-            if recognized_words / words >= 0.75:
-                likely_plaintexts[shift] = text
+        # check proportion of recognized words to total words
+        if recognized_words / len(words) >= 0.5:
+            print(f"Recognized {recognized_words}/{len(words)} words")
+            likely_plaintexts[shift] = text
 
 # output plaintext and shift
+print(f"Likely plaintexts:\n")
 
+for shift, text in likely_plaintexts.items():
+    print(f"Shift: {shift}\n{text}")
