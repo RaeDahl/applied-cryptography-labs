@@ -13,7 +13,7 @@ ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`~!@#$
 ciphertext = sys.stdin.read()
 
 # generate candidate plaintexts
-poss_plaintexts = []
+poss_plaintexts = {}
 
 for shift in range(len(ALPHABET)):
 
@@ -38,12 +38,28 @@ for shift in range(len(ALPHABET)):
             current_plaintext.append(char)
     
     # add plaintext to list of possibilities
-    poss_plaintexts.append("".join(current_plaintext))
-
-for text in poss_plaintexts:
-    print(f"{text}\n")
+    poss_plaintexts[shift] = current_plaintext
 
 # screen plaintexts with dictionary
+likely_plaintexts = {}
+
+# load dictionary file
+with open("dictionary.txt", "r") as dictionary:
+
+    for shift, text in poss_plaintexts:
+
+        # Split into words by spaces
+        words = text.split(" ")
+
+        # find how many words are in dictionary
+        recognized_words = 0
+
+        for word in words:
+            
+
+            # check proportion of recognized words to total words
+            if recognized_words / words >= 0.75:
+                likely_plaintexts[shift] = text
 
 # output plaintext and shift
 
