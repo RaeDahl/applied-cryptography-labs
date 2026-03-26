@@ -30,3 +30,23 @@ def decrypt(ciphertext: str, key: str):
 
     # convert to string and output
     return "".join(plaintext)
+
+# check if output makes sense
+def check_key_validity(ciphertext: str):
+    pass
+
+###MAIN###
+# get input from stdin
+ciphertext = sys.stdin.read()
+
+with open("dictionary.txt", "r") as dictionary_file:
+    dictionary = dictionary_file.read()
+
+poss_plaintexts = {}
+
+# TODO: add some preliminary filtering here?
+for key in dictionary:
+    candidate = decrypt(ciphertext, key)
+    if check_key_validity(candidate):
+        poss_plaintexts[key] = candidate
+
